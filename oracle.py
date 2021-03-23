@@ -21,7 +21,7 @@ class RandomOracle(object):
     # applied to input i
     def oracle(self, i):
         if i not in self._mapping:
-            # Pick 3 large random integers
+            # Pick 3 potentially large random integers
             x, y, z = list(self._random.choices(range(1, sys.maxsize), k=3))
             # Use them to construct a quadratic function
             f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
