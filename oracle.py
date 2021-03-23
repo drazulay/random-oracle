@@ -1,4 +1,6 @@
+import sys
 from hashlib import blake2b
+from random import Random
 from secrets import SystemRandom, token_bytes
 
 """
@@ -11,47 +13,48 @@ class RandomOracle(object):
             person=None,
             key=None,
             seed=None,
-            mod_size=16,
-            digest_size=32):
+            mod_size=sys.maxsize,
+            hash_digest_size=32):
 
-        self._mapping = {}
+        # Random() can be seeded for reproducability but should not be used in
+        # real world applications.
+        self._random = SystemRandom() if seed is None else Random(seed)
 
-        self._random = SystemRandom()
-
-        # Use a 4096bit number as seed if is is None
-        if seed is None:
-            seed = self._random.getrandbits(4096)
-
-        self._random.seed(seed)
+        # Number of bits used for quadratic function moduli
+        self._mod_size = mod_size
 
         # Blake2b params
-        self._salt = salt
-        self._person = person
-        self._key = key
-        self._digest_size = digest_size
-        
-        # Random quadratic function used to generate Blake2b input data
-        x = self._random.getrandbits(mod_size)
-        y = self._random.getrandbits(mod_size)
-        beta = self._random.getrandbits(mod_size)
-        self._q = lambda i: (x*(i**2))+(y*i)+beta
+        self._salt = salt.to_bytes(length=16, byteorder='big') if salt else b''
+        self._person = person.to_bytes(length=16, byteorder='big') if person else b''
+        self._key = key.to_bytes(length=16, byteorder='big') if key else b''
+        self._hash_digest_size = min(blake2b.MAX_DIGEST_SIZE, hash_digest_size)
 
-    def hash(self, i):
+        # Storage for oracles
+        self._mapping = {}
+
+
+    # Stores and returns the output of a randomly generated quadratic function
+    # applied to input i
+    def oracle(self, i):
         if i not in self._mapping:
-            # Calculate a Blake2b hash using random quadratic function
-            # function that incorporates i
-            self._mapping[i] = blake2b(
-                    token_bytes(self._q(i)),
-                    salt=self._salt if self._salt is not None else token_bytes(16),
-                    person=self._person if self._person is not None else token_bytes(16),
-                    key=self._key if self._key is not None else token_bytes(64),
-                    digest_size=self._digest_size).hexdigest()
+            # Pick 3 large random integers
+            x, y, z = list(self._random.choices(range(1, self._mod_size), k=3))
+            # Use them to construct a quadratic function
+            f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
+            # Apply it to i and store the output
+            self._mapping[i] = f(i)
 
         return self._mapping[i]
 
+
+    def hash(self, i):
+        oracle = self.oracle(i).to_bytes(self._hash_digest_size, byteorder='big')
+        h = blake2b(oracle, salt=self._salt, person=self._person, key=self._key,
+                digest_size=self._hash_digest_size)
+        return h.hexdigest()
+
+
 if __name__ == '__main__':
-    oracle = RandomOracle()
-    print('--- generated ---')
-    [print(f'{str(i).zfill(2)} -> {oracle.hash(i)}') for i in range(0,10)]
-    print('--- cached ---')
-    [print(f'{str(i).zfill(2)} -> {oracle.hash(i)}') for i in range(0,10)]
+    oracle = RandomOracle(1)
+    [print(f'i={str(i).zfill(2)}, o={oracle.oracle(i)}, hash={oracle.hash(i)}')
+        for i in range(0,10)]
