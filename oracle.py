@@ -31,20 +31,14 @@ class RandomOracle(object):
         return self._mapping[i]
 
 
-    def hash(self, i, **blake2_params):
-        if blake2_params.get('digest_size') is not None:
-            blake2_params['digest_size'] = min(blake2b.MAX_DIGEST_SIZE,
-                    blake2_params['digest_size'])
-
-        oracle = self.oracle(i).to_bytes(sys.int_info.bits_per_digit,
+    def hash(self, i, hashfunc=blake2b, **hashfunc_params):
+        oracle = self.oracle(i).to_bytes(
+                sys.int_info.bits_per_digit * sys.int_info.sizeof_digit,
                 byteorder='big')
 
-        h = blake2b(oracle, **blake2_params)
-
-        return h.hexdigest()
-
+        return hashfunc(oracle, **hashfunc_params)
 
 if __name__ == '__main__':
-    oracle = RandomOracle()
-    [print(f'i={str(i)}, o={oracle.oracle(i)}, hash={oracle.hash(i)}')
-        for i in range(0,10)]
+    o = RandomOracle()
+    [print(f'i={str(i)}, o={o.oracle(i)}, hash={o.hash(i).hexdigest()}')
+        for i in (0, 1, 3, 7, 89, 144, 360, 2048, sys.maxsize)]
