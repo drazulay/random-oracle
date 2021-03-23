@@ -8,21 +8,10 @@ See: https://en.wikipedia.org/wiki/Random_oracle
 """
 class RandomOracle(object):
 
-    def __init__(self,
-            blake2b_salt=b'',
-            blake2b_person=b'',
-            blake2b_key=b'',
-            blake2b_digest_size=32,
-            seed=None):
-
+    def __init__(self, seed=None):
         # Random() can be seeded for reproducability but should not be used in
         # real world applications.
         self._random = SystemRandom() if seed is None else Random(seed)
-
-        # Blake2b params
-        self._salt = blake2b_salt
-        self._person = blake2b_person
-        self._key = blake2b_person
 
         # Storage for oracles
         self._mapping = {}
