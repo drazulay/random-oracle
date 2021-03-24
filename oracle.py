@@ -27,8 +27,8 @@ class RandomOracle(object):
     TODO:
     According to Bellare and Rogaway "the random oracle produces a bit-string
     of infinite length which can be truncated to the length desired" so I think
-    I need to implement a random walk using a generator instead of using random
-    quadratic functions.
+    I need to implement this some other way, perhaps using a generator and
+    the fibonacci sequence in some way.
     """
     def oracle(self, i):
         if i not in self._mapping:
