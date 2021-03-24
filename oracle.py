@@ -18,26 +18,26 @@ class RandomOracle(object):
 
 
     """
-    Stores and returns the truncated output of a randomly generated quadratic
-    function applied to input i.
+    Stores and returns the output of a randomly generated quadratic function
+    applied to input i, truncated after a certain number of digits.
 
-    All numbers generated are at least 32 digits long, but thereafter it can be
-    deduced from the number of digits of the output how large the input was.
-
-    TODO:
     According to Bellare and Rogaway "the random oracle produces a bit-string
-    of infinite length which can be truncated to the length desired" so I think
-    I need to implement this some other way, perhaps using a generator and
-    the fibonacci sequence in some way.
+    of infinite length which can be truncated to the length desired"
+
+    This function produces a decimal string instead.
     """
-    def oracle(self, i):
+    def oracle(self, i, digits=64):
         if i not in self._mapping:
-            # Pick 3 potentially large random integers
-            x, y, z = list(self._random.choices(range(0, sys.maxsize), k=3))
-            # Use them to construct a quadratic function
-            f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
-            # Apply it to i, cut off after 32 digits and store the output
-            self._mapping[i] = int(str(f(i))[:32])
+            c = 0
+            p = []
+            while c < digits:
+                x, y, z = list(self._random.choices(range(0, sys.maxsize), k=3))
+                f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
+                s = str(f(i)) 
+                c += len(s)
+                p.append(s)
+
+            self._mapping[i] = int(''.join(p)[:digits])
 
         return self._mapping[i]
 
