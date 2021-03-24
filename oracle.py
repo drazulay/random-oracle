@@ -20,13 +20,8 @@ class RandomOracle(object):
 
 
     """
-    Stores and returns the output of a randomly generated quadratic function
-    applied to input i, truncated after a certain number of digits.
-
-    According to Bellare and Rogaway "the random oracle produces a bit-string
-    of infinite length which can be truncated to the length desired"
-
-    This function produces a decimal string instead.
+    Apply randomly generated quadratic functions to input i, then store and
+    return the resulting output truncated to the desired number of digits.
     """
     def oracle(self, i, digits=64):
         if i not in self._mapping:
