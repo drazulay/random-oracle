@@ -1,5 +1,4 @@
 import sys
-from hashlib import blake2b
 from random import Random
 from secrets import SystemRandom
 
