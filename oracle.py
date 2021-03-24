@@ -24,9 +24,11 @@ class RandomOracle(object):
     return the resulting output truncated to the desired number of digits.
     """
     def oracle(self, i, digits=64):
-        if i not in self._mapping:
-            c = 0
-            p = []
+        old_p = self._mapping.get(i, '')
+
+        if i not in self._mapping or len(old_p) < digits:
+            c = len(old_p)
+            p = [old_p]
             while c < digits:
                 x, y, z = list(self._random.choices(
                     range(0, sys.maxsize),
@@ -37,9 +39,9 @@ class RandomOracle(object):
                 c += len(s)
                 p.append(s)
 
-            self._mapping[i] = int(''.join(p)[:digits])
+            self._mapping[i] = ''.join(p)
 
-        return self._mapping[i]
+        return int(self._mapping[i][:digits])
 
 
 if __name__ == '__main__':
