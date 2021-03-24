@@ -17,19 +17,29 @@ class RandomOracle(object):
         self._mapping = {}
 
 
-    # Stores and returns the output of a randomly generated quadratic function
-    # applied to input i
+    """
+    Stores and returns the truncated output of a randomly generated quadratic
+    function applied to input i.
+
+    All numbers generated are at least 32 digits long, but thereafter it can be
+    deduced from the number of digits of the output how large the input was.
+
+    TODO:
+    According to Bellare and Rogaway "the random oracle produces a bit-string
+    of infinite length which can be truncated to the length desired" so I think
+    I need to implement a random walk using a generator instead of using random
+    quadratic functions.
+    """
     def oracle(self, i):
         if i not in self._mapping:
             # Pick 3 potentially large random integers
             x, y, z = list(self._random.choices(range(0, sys.maxsize), k=3))
             # Use them to construct a quadratic function
             f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
-            # Apply it to i, cut off after 32 digits and store the output
-            # All numbers generated are at least 32 digits long, but after that
-            # there it can be deduced from the number of digits how large the
-            # input was.
-            # TODO: math for large ints to allow big outputs
+            """
+
+            """
+            #Apply it to i, cut off after 32 digits and store the output
             self._mapping[i] = int(str(f(i))[:32])
 
         return self._mapping[i]
