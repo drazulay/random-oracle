@@ -1,8 +1,8 @@
 # random-oracle
 
 A random oracle is a 'black box' that responds to each input with an output
-that is truly random. It is idempotent, so the output will not change when the
-input doesn't change.
+that is truly random. It is idempotent, so on successive calls, the output
+will not change as long as the input doesn't change.
 
 According to Bellare and Rogaway "the random oracle produces a bit-string of
 infinite length which can be truncated to the length desired".
