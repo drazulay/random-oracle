@@ -9,8 +9,7 @@ infinite length which can be truncated to the length desired". My class takes in
 
 The class has constructor arguments that change its source of randomness. It can use the old
 `random.Random` if seeding is a requirement, `secrets.SystemRandom` when use of
-`/dev/urandom` is needed or it can fetch random numbers from the ANU QRNG
-quantum random number generator api. Quantum random numbers are prefetched so
+`/dev/urandom` is needed or it can fetch random numbers from the [ANU QRNG](https://qrng.anu.edu.au/) quantum random number generator api. Quantum random numbers are prefetched so
 there may be an initial delay when constructing the class with `use_qrn=True`.
 
 In general it works by taking 3 random numbers, generating a quadratic function
