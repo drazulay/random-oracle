@@ -17,43 +17,47 @@ In general it works by taking 3 random numbers, generating a quadratic function
 and applying it to the input. This process is repeated until the output has the
 desired amount of digits.
 
+## General usage
+```
+from oracle import RandomOracle
+o = RandomOracle()
+foo(o.rand(42))
+bar(o.rand(42, 4096))
+```
+
 ### Using `secrets.SystemRandom` (default):
 ```
->>> from oracle import RandomOracle
 >>> o = RandomOracle()
 rng source: secrets.SystemRandom
->>> o.oracle(42, digits=32)
-14528330955310958865159801373664
->>> o.oracle(42, digits=64)
-1452833095531095886515980137366470662963210727055033068395198181
->>> o.oracle(42, digits=16)
-1452833095531095
+>>> o.rand(42, 32)
+{'in': 42, 'out': '64256680247222349271835474023544', 'digits': 32}
+>>> o.rand(42, 64)
+{'in': 42, 'out': '6425668024722234927183547402354433128727958598695401521858554967', 'digits': 64}
+>>> o.rand(42, 16)
+{'in': 42, 'out': '6425668024722234', 'digits': 16}
 
 ```
 ### Using `random.Random`:
 ```
->>> from oracle import RandomOracle
 >>> o = RandomOracle(seed=127)
 rng source: random.Random
->>> o.oracle(42, digits=32)
-31254644062366843432856949844570
->>> o.oracle(42, digits=64)
-3125464406236684343285694984457045626881512861498576691209085379
->>> o.oracle(42, digits=16)
-3125464406236684
+>>> o.rand(42, 32)
+{'in': 42, 'out': '31254644062366843432856949844570', 'digits': 32}
+>>> o.rand(42, 64)
+{'in': 42, 'out': '3125464406236684343285694984457015128614985766912090853797728353', 'digits': 64}
+>>> o.rand(42, 16)
+{'in': 42, 'out': '3125464406236684', 'digits': 16}
 ```
 
 ### Using the ANU QRNG api:
 ```
->>> from oracle import RandomOracle
 >>> o = RandomOracle(use_qrn=True)
 rng source: ANU QRNG api
 buffering 1024 quantum random numbers..
-done
->>> o.oracle(42, digits=32)
-16616476605623646468935274835361
->>> o.oracle(42, digits=64)
-1661647660562364646893527483536191620530671230464389866141863745
->>> o.oracle(42, digits=16)
-1661647660562364
+>>> o.rand(42, 32)
+{'in': 42, 'out': '98402140582296609043181070266187', 'digits': 32}
+>>> o.rand(42, 64)
+{'in': 42, 'out': '9840214058229660904318107026618713874032176081240351014891165138', 'digits': 64}
+>>> o.rand(42, 16)
+{'in': 42, 'out': '9840214058229660', 'digits': 16}
 ```
