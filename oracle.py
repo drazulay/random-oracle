@@ -71,7 +71,7 @@ class RandomOracle(object):
         x, y, z = list(self._qrn()) if self._use_qrn else list(
                 self._random.choices(range(0, sys.maxsize), k=3))
 
-        return ((x*(i))**2)+(y*(i))+z
+        return ((x*i)**2)+(y*i)+z
 
 
     """
