@@ -1,1 +1,2 @@
+
 from oracle import RandomOracle
