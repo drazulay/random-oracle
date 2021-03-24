@@ -5,7 +5,7 @@ that is truly random. It is idempotent, so on successive calls, the output
 will not change as long as the input doesn't change.
 
 I've made a simple python class to learn about this pattern. According to Bellare and Rogaway "the random oracle produces a bit-string of
-infinite length which can be truncated to the length desired". My class takes integers as inputs and outputs integers as digit strings of arbitrary length instead. One can always convert the outputs to binary using `bin(output)`.
+infinite length which can be truncated to the length desired". My class takes integers as inputs and outputs integers as digit strings of arbitrary length instead. One can always convert the outputs to binary, for example: `bin(int('64256680247222349271835474023544'))[2:]` results in `'1100101011000010001000100000100000101001010011111001011010000001010100001011100000100100100101010001111000'`.
 
 The class has constructor arguments that change its source of randomness. It can use the old
 `random.Random` if seeding is a requirement, `secrets.SystemRandom` when use of
