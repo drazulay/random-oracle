@@ -10,8 +10,8 @@ infinite length which can be truncated to the length desired".
 I've made a simple python class to learn about this pattern. It can use the old
 `random.Random` if seeding is a requirement, `secrets.SystemRandom` when use of
 `/dev/urandom` is needed or it can fetch random numbers from the ANU QRNG
-quantum random number generator api. The ANU QRNG will cause slower generation
-due to the api call.
+quantum random number generator api. Quantum random numbers are prefetched so
+there may be an initial delay when constructing the class with `use_qrn=True`.
 
 In general it works by taking 3 random numbers, generating a quadratic function
 and applying it to the input. This process is repeated until the output has the
