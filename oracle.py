@@ -36,10 +36,7 @@ class RandomOracle(object):
             x, y, z = list(self._random.choices(range(0, sys.maxsize), k=3))
             # Use them to construct a quadratic function
             f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
-            """
-
-            """
-            #Apply it to i, cut off after 32 digits and store the output
+            # Apply it to i, cut off after 32 digits and store the output
             self._mapping[i] = int(str(f(i))[:32])
 
         return self._mapping[i]
