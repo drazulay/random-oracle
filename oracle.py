@@ -22,11 +22,15 @@ class RandomOracle(object):
     def oracle(self, i):
         if i not in self._mapping:
             # Pick 3 potentially large random integers
-            x, y, z = list(self._random.choices(range(1, sys.maxsize), k=3))
+            x, y, z = list(self._random.choices(range(0, sys.maxsize), k=3))
             # Use them to construct a quadratic function
             f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
-            # Apply it to i and store the output
-            self._mapping[i] = f(i)
+            # Apply it to i, cut off after 32 digits and store the output
+            # All numbers generated are at least 32 digits long, but after that
+            # there it can be deduced from the number of digits how large the
+            # input was.
+            # TODO: math for large ints to allow big outputs
+            self._mapping[i] = int(str(f(i))[:32])
 
         return self._mapping[i]
 
@@ -40,5 +44,10 @@ class RandomOracle(object):
 
 if __name__ == '__main__':
     o = RandomOracle()
-    [print(f'i={str(i)}, o={o.oracle(i)}, hash={o.hash(i).hexdigest()}')
-        for i in (0, 1, 3, 7, 89, 144, 360, 2048, sys.maxsize)]
+    # Test with some inputs
+    xs = (0, 1, 3, 7, 89, 144, 360, 2048, sys.maxsize)
+    maxlen = len(str(max(xs)))
+
+    print('Inputs -> Outputs:')
+    for x in xs:
+        print(f'{str(x).rjust(maxlen)} -> {o.oracle(x)}')
