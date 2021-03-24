@@ -1,6 +1,5 @@
 import sys
 import requests
-import numpy as np
 
 from random import Random
 from secrets import SystemRandom
