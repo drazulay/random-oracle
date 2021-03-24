@@ -7,9 +7,19 @@ input doesn't change.
 According to Bellare and Rogaway "the random oracle produces a bit-string of
 infinite length which can be truncated to the length desired".
 
+I've made a simple python class to learn about this pattern. It can use the old
+`random.Random` if seeding is a requirement, `secrets.SystemRandom` when use of
+`/dev/urandom` is needed or it can fetch random numbers from the ANU QRNG
+quantum random number generator api. The ANU QRNG will cause slower generation
+due to the api call.
+
+In general it works by taking 3 random numbers, generating a quadratic function
+and applying it to the input. This process is repeated until the output has the
+desired amount of digits.
+
 ```
 >>> from oracle import RandomOracle
->>> o = RandomOracle()
+>>> o = RandomOracle(use_qrng=True)
 >>> o.oracle(31, digits=64)
 3370523235421078355251902197137288335362225342627494301818540315
 >>> o.oracle(31, digits=96)
