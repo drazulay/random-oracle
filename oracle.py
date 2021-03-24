@@ -1,9 +1,11 @@
 import sys
 from hashlib import blake2b
 from random import Random
-from secrets import SystemRandom, token_bytes
+from secrets import SystemRandom
 
 """
+This class implements a random oracle.
+
 See: https://en.wikipedia.org/wiki/Random_oracle
 """
 class RandomOracle(object):
@@ -31,7 +33,10 @@ class RandomOracle(object):
             c = 0
             p = []
             while c < digits:
-                x, y, z = list(self._random.choices(range(0, sys.maxsize), k=3))
+                x, y, z = list(self._random.choices(
+                    range(0, sys.maxsize),
+                    k=3))
+
                 f = lambda a: ((x*(a+1))**2)+(y*(a+1))+z
                 s = str(f(i)) 
                 c += len(s)
@@ -42,15 +47,9 @@ class RandomOracle(object):
         return self._mapping[i]
 
 
-    def hash(self, i, hashfunc=blake2b, **hashfunc_params):
-        oracle = self.oracle(i).to_bytes(
-                sys.int_info.bits_per_digit * sys.int_info.sizeof_digit,
-                byteorder='big')
-
-        return hashfunc(oracle, **hashfunc_params)
-
 if __name__ == '__main__':
     o = RandomOracle()
+
     # Test with some inputs
     xs = (0, 1, 3, 7, 89, 144, 360, 2048, sys.maxsize)
     maxlen = len(str(max(xs)))
