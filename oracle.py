@@ -53,15 +53,16 @@ class RandomOracle(object):
             print('Error fetching data from ANU QRNG api')
             exit(1)
 
-        print('done')
 
-
-    def _qrn(self, length=3):
+    """
+    Return n quantum random numbers
+    """
+    def _qrn(self, n=3):
         # If there's a buffer underflow preload some numbers from the api
-        if len(self._qrn_data) < length:
+        if len(self._qrn_data) < n:
             self._qrn_preload()
 
-        return [int(self._qrn_data.pop(), 16) for x in range(length)]
+        return [int(self._qrn_data.pop(), 16) for x in range(n)]
 
 
     """
@@ -78,29 +79,33 @@ class RandomOracle(object):
     Generate an oracle for input i, store it and truncate the output to the
     desired number of digits.
     """
-    def oracle(self, i, digits=64):
-        old_p = self._mapping.get(i, '')
+    def rand(self, i, digits=64):
+        data = self._mapping.get(i, {})
+        p = [data.get('out', '')]
+        c = len(p)
 
-        if i not in self._mapping or len(old_p) < digits:
-            c = len(old_p)
-            p = [old_p]
-            while c < digits:
-                s = str(self._qf(i)) 
-                c += len(s)
-                p.append(s)
+        while c < digits:
+            s = str(self._qf(i)) 
+            c += len(s)
+            p.append(s)
 
-            self._mapping[i] = ''.join(p)
+        o = ''.join(p)
 
-        return int(self._mapping[i][:digits])
+        self._mapping[i] = {
+            "in": i,
+            "out": o[:digits],
+            "digits": digits}
+
+        return self._mapping[i]
 
 
 if __name__ == '__main__':
+    o = RandomOracle(seed=1)
+    [print(f'{o.rand(x)}') for x in (0, 1, 0, 2, 1, 2, sys.maxsize)]
+
+    o = RandomOracle()
+    [print(f'{o.rand(x)}') for x in (0, 1, 0, 2, 1, 2, sys.maxsize)]
+
     o = RandomOracle(use_qrn=True)
-
-    # Test with some inputs
-    xs = (0, 1, 3, 7, 89, 144, 360, 2048, sys.maxsize)
-    maxlen = len(str(max(xs)))
-
-    print('Inputs -> Outputs:')
-    for x in xs:
-        print(f'{str(x).rjust(maxlen)} -> {o.oracle(x)}')
+    [print(f'{o.rand(x)}') for x in (0, 1, 0, 2, 1, 2, sys.maxsize)]
+        
