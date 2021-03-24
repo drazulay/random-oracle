@@ -1,4 +1,4 @@
-# random-oracle
+# Random Oracle with Quantum Random Number support
 
 A random oracle is a 'black box' that responds to each input with an output
 that is truly random. It is idempotent, so on successive calls, the output
