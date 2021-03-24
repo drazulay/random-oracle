@@ -4,10 +4,10 @@ A random oracle is a 'black box' that responds to each input with an output
 that is truly random. It is idempotent, so on successive calls, the output
 will not change as long as the input doesn't change.
 
-According to Bellare and Rogaway "the random oracle produces a bit-string of
-infinite length which can be truncated to the length desired".
+I've made a simple python class to learn about this pattern. According to Bellare and Rogaway "the random oracle produces a bit-string of
+infinite length which can be truncated to the length desired". My class takes integers as inputs and outputs integers as digit strings of arbitrary length instead. One can always convert the outputs to binary using `bin(output)`.
 
-I've made a simple python class to learn about this pattern. It can use the old
+The class has constructor arguments that change its source of randomness. It can use the old
 `random.Random` if seeding is a requirement, `secrets.SystemRandom` when use of
 `/dev/urandom` is needed or it can fetch random numbers from the ANU QRNG
 quantum random number generator api. Quantum random numbers are prefetched so
