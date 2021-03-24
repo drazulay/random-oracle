@@ -12,7 +12,7 @@ The class has constructor arguments that change its source of randomness. It can
 `/dev/urandom` is needed or it can fetch random numbers from the [ANU QRNG](https://qrng.anu.edu.au/) quantum random number generator api. Quantum random numbers are prefetched so
 there may be an initial delay when constructing the class with `use_qrn=True`.
 
-In general it works by taking 3 random numbers, generating a quadratic function
+In general it works by taking 3 random numbers, generating a quadratic function that has random parameters
 and applying it to the input. This process is repeated until the output has the
 desired amount of digits.
 
